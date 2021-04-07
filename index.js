@@ -1,3 +1,22 @@
+/** Folder Structure:
+ *      >parties: contains subfolders with of the parties which are going to sign the template.
+ *                inside the individual party subfolders are the pkcs#12 keystore file, which have
+ *                the x509 certificates, private-key of that party.
+ *      >templates: unzipped from the archive files and stored in a directory. Currently contains
+ *                  helloworldstate template. Within the folder of each template a manifest.json
+ *                  is to be created before signing. It would have a single object 'signatures' which 
+ *                  would be an empty array when initialized.
+ *      >index.js: this file has all the logic for signing and verifying the template.
+ * 
+ * Steps:
+ *  > For this repl keystores have already been generated using OpenSSL. But custom pkcs#12 can also be used instead of them.
+ *  > The project needs node version 15.6.0 and higher as a new class has been added from here on
+ *    which handle X509 certificates.
+ *  > 
+ * 
+ */
+
+
 var pem = require('pem');
 var fs = require('fs');
 const {
@@ -8,6 +27,8 @@ const {
   } = require('crypto');
 const { Template } = require('@accordproject/cicero-core');
 
+//this functions takes in the buffer of certificate.pfx which is a pkcs#12 keystore,
+//it returns ssslcert object which has the x509 certificate, privateKey and CA certificate.
 const importPKCS = async (pfx) => {
     return new Promise((resolve, reject) => {
         pem.readPkcs12(pfx, { p12Password: "123" }, function (err, sslcert){
@@ -19,22 +40,26 @@ const importPKCS = async (pfx) => {
     })
 }
 
+//takes in name of the party signing the template, password of the pkcs#12 keystore file, templateName
 const sign = async (partyName, pkcsPassword, templateName) => {
     try {
         const timeStamp = Date.now();
         const template = await Template.fromDirectory(`./templates/${templateName}`);
         const templateHash = template.getHash();
+        //pkcs#12 keystore file buffer
         const pfx = fs.readFileSync(`./parties/${partyName}/certificate.pfx`);
         const manifestString = fs.readFileSync(`./templates/${templateName}/manifest.json`);
         const manifest = JSON.parse(manifestString);
         const keys = await importPKCS(pfx, pkcsPassword);
         const privateKey = createPrivateKey(keys.key);
         const certificate = await new X509Certificate(keys.cert);
+
         const sign = createSign('SHA256');
         sign.write(templateHash+timeStamp);
         sign.end();
         const signature = sign.sign(privateKey, 'hex');
-        console.log(signature);
+        //signatureDetails obeject will be stored in signatures array in manifest.json file in the 
+        //template directory
         const signatureDetails = {
             partyName: partyName,
             signature: signature,
@@ -57,6 +82,7 @@ const verify = async (templateName) => {
         const manifestString = fs.readFileSync(`./templates/${templateName}/manifest.json`);
         const manifest = JSON.parse(manifestString);
         const signaturesArray = manifest.signatures;
+        //iterates over all signature objects from manifest.json to verify the signatures
         for(let i=0; i < signaturesArray.length; i++){
             const { partyName, signature, timeStamp, certificateString } = signaturesArray[i];
             const certificate = await new X509Certificate(certificateString);
@@ -76,6 +102,7 @@ const verify = async (templateName) => {
     }
 }
 
+//function used to reset manifest.json file and remove older signatures.
 const reset = async (templateName) => {
     const newManifest = { signatures: [] };
     const data = JSON.stringify(newManifest);
