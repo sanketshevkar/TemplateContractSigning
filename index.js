@@ -59,6 +59,7 @@ const sign = async (partyName, pkcsPassword, templateName, signatureType) => {
         : { signatures: { parties: [...manifest.signatures.parties], templateAuthors:[...manifest.signatures.templateAuthors].concat(signatureDetails) } };
         const data = JSON.stringify(updatedManifest);
         fs.writeFileSync(`./templates/${templateName}/manifest.json`, data);
+        
         return signatureDetails;
     } catch (error) {
         console.log(error);
