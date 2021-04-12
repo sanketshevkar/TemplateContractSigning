@@ -14,6 +14,8 @@
     "@accordproject/markdown-cicero": "^0.12.12",
     "jszip": "^3.6.0",
     "node-forge": "^0.10.0",
-    "pem": "^1.14.4"
+    "pem": "^1.14.4",
+    "unzip": "^0.1.11",
+    "unzipper": "^0.10.11"
   }
 }
