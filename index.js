@@ -10,6 +10,7 @@ const signContractAcme = async() =>{
     const contractPath = path.join(__dirname, 'sample.md');
     const contractText = fs.readFileSync(contractPath, 'utf8');
     const contract = new Contract(template);
+    //new method signInsatnce added in TemplateInstance class
     const signature = contract.signInstance(contractText, null, keyStorePath, "123");
     const data = JSON.stringify(signature);
     const signaturePath = path.join(__dirname, 'contractSignatures.json');
@@ -27,6 +28,7 @@ const signContractMagnetoCorp = async() =>{
     const signatureObject = JSON.parse(signatureString);
     const contractText = fs.readFileSync(contractPath, 'utf8');
     const contract = new Contract(template);
+    //new method signInsatnce added in TemplateInstance class
     const signature = contract.signInstance(contractText, signatureObject, keyStorePath, "123");
     const newSignatureObject = {
         contractSignatures: signature
@@ -87,6 +89,7 @@ const signTemplate = async() =>{
     const keyStorePath = path.join(__dirname, 'developers', 'sanket', 'keystore.p12');
     const templatePath = path.join(__dirname, 'templates', 'helloworldstateTemplate');
     const template = await Template.fromDirectory(templatePath);
+    //toArchive method updated in Template and TemplateSaver class
     const archiveBuffer = await template.toArchive('ergo', {}, keyStorePath, "123");
     fs.writeFile('./archive.cta', archiveBuffer, function(err) {
         if (err) throw 'error writing file: ' + err;
@@ -100,6 +103,7 @@ const verifyTemplateSignatures = async() =>{
     const signatureObject = JSON.parse(signatureString);
     const templatePath = path.join(__dirname, 'helloworldstateTemplate');
     const template = await Template.fromDirectory(templatePath);
+    //new method verifySignatures added in Template class
     const response = template.verifySignatures(signatureObject);
     return response
 }
@@ -113,6 +117,7 @@ const verifyContractSignatures = async() =>{
     const contractPath = path.join(__dirname, 'sample.md');
     const contractText = fs.readFileSync(contractPath, 'utf8');
     const contract = new Contract(template);
+    //new method verifySignatures added in TemplateInstance class
     const response = contract.verifySignatures(contractText, signatureObject);
     console.log(response)
 }
