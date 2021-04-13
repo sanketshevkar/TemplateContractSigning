@@ -15,7 +15,22 @@
 * sample.md file: this file has the contract text that is going to get executed.
 
 ## Steps
- * For this repl keystores have already been generated using OpenSSL.     
+ * For this repo keystores have already been generated using OpenSSL.
+
+### Setup Proccess
+
+Install the node modules and link the updated cicero packages that are to be used for signing and verification of templates and contracts in this project.
+
+```
+cd TemplateContractSigning
+npm install
+cd cicero
+npm install -g lerna
+lerna bootstrap
+npm link
+cd ..
+npm link "cicero"
+```
 
 * Reset the demo before starting with the signing procsess.
 
