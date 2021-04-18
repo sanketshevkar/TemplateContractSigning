@@ -1,3 +1,5 @@
+# New methods in cicero used for signing contracts and templates can be found in [this repo](https://github.com/sanketshevkar/cicero-mirror).
+
 # Template Signing
 
 ## Project Structure
