@@ -1,0 +1,36 @@
+{
+    "source": {
+        "include": ["packages"],
+        "exclude": ["packages/generator-cicero-template", "packages/cicero-core/umd","packages/cicero-core/lib"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": ".?[\\/](coverage|out|node_modules|test)[\\/].+"
+    },
+    "recurseDepth": 10,
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+      "logoFile": "",
+      "cleverLinks": false,
+      "monospaceLinks": false,
+      "dateFormat": "ddd MMM Do YYYY",
+      "outputSourceFiles": true,
+      "outputSourcePath": true,
+      "systemName": "Accord Project Cicero",
+      "footer": "",
+      "copyright": "Released under the Apache License v2.0",
+      "navType": "vertical",
+      "theme": "spacelab",
+      "linenums": true,
+      "collapseSymbols": false,
+      "inverseNav": true,
+      "protocol": "html://",
+      "methodHeadingReturns": false
+    },
+    "markdown": {
+      "parser": "gfm",
+      "hardwrap": true
+    }
+}

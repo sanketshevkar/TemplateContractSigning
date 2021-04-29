@@ -1,0 +1,19 @@
+{
+    "name": "<%= data.templateName %>",
+    "version": "0.0.0",
+    "description": "Name of the person to greet: \"Dan\".\nThank you!",
+    "author": "<%= data.author %>",
+    "accordproject": {
+        "template": "contract",
+        "cicero": "^<%= data.engineVersion %>",
+        "runtime": "ergo"
+    },
+    "devDependencies": {
+        "cucumber": "^5.1.0",
+        "chai": "4.2.0",
+        "@accordproject/cicero-cli": "^<%= data.engineVersion %>"
+    },
+    "scripts": {
+        "test": "cucumber-js test -r .cucumber.js"
+    }
+}
