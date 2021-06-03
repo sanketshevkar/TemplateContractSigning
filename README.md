@@ -70,7 +70,7 @@ node index.js signContractMagnetoCorp
 * Verify the contract signatures from `./contractSignatures.json`
 
 ```
-node index.js signContractMagnetoCorp
+node index.js verifyContractSignatures
 ```
 
 
