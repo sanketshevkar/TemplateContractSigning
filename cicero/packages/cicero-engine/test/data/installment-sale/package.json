@@ -5,7 +5,7 @@
     "author": "Accord Project",
     "license": "Apache-2.0",
     "accordproject": {
-        "template": "clause",
-        "cicero": "^0.21.0"
+        "template": "contract",
+        "cicero": "^0.22.0"
     }
 }

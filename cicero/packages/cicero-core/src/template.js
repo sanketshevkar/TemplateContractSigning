@@ -48,9 +48,9 @@ class Template {
      */
     constructor(packageJson, readme, samples, request, logo, options) {
         this.metadata = new Metadata(packageJson, readme, samples, request, logo);
-        this.logicManager = new LogicManager('cicero', null, options);
+        this.logicManager = new LogicManager('es6', null, options);
         const templateKind = this.getMetadata().getTemplateType() !== 0 ? 'clause' : 'contract';
-        this.parserManager = new ParserManager(this.getModelManager(), null, templateKind);
+        this.parserManager = new ParserManager(this.getModelManager(),null,templateKind);
     }
 
     /**
@@ -75,13 +75,13 @@ class Template {
      */
     getTemplateModel() {
 
-        let modelType = 'org.accordproject.cicero.contract.AccordContract';
+        let modelType = 'org.accordproject.contract.Contract';
 
-        if (this.getMetadata().getTemplateType() !== 0) {
-            modelType = 'org.accordproject.cicero.contract.AccordClause';
+        if(this.getMetadata().getTemplateType() !== 0) {
+            modelType = 'org.accordproject.contract.Clause';
         }
         const templateModels = this.getIntrospector().getClassDeclarations().filter((item) => {
-            return !item.isAbstract() && Template.instanceOf(item, modelType);
+            return !item.isAbstract() && Template.instanceOf(item,modelType);
         });
 
         if (templateModels.length > 1) {
@@ -152,7 +152,7 @@ class Template {
     getHash() {
         const content = {};
         content.metadata = this.getMetadata().toJSON();
-        if (this.parserManager.getTemplate()) {
+        if(this.parserManager.getTemplate()) {
             content.grammar = this.parserManager.getTemplate();
         }
         content.models = {};
@@ -160,7 +160,7 @@ class Template {
 
         let modelFiles = this.getModelManager().getModels();
         modelFiles.forEach(function (file) {
-            content.models[file.name] = file.content;
+            content.models[file.namespace] = file.content;
         });
 
         let scriptManager = this.getScriptManager();
@@ -181,7 +181,7 @@ class Template {
      * @param {string} [keyStorePassword] - password for the keystore file
      * @return {object} - object containing signers metadata, timestamp, signatory's certificate, signature
      */
-    signTemplate(keyStorePath, keyStorePassword) {
+     signTemplate(keyStorePath, keyStorePassword) {
         const timeStamp = Date.now();
         const templateHash = this.getHash();
         const p12Ffile = fs.readFileSync(keyStorePath, { encoding: 'base64' });
@@ -219,7 +219,7 @@ class Template {
      * @param {string} [signaturesObject] - Contains signatures of the template developer/author and the parties who signed the contract.
      * @return {object} returning result of verification and message
      */
-    verifySignatures(signaturesObject) {
+     verifySignatures(signaturesObject) {
         const templateSignature = signaturesObject.signatures.templateSignature;
         const templateHash = this.getHash();
 
@@ -259,11 +259,9 @@ class Template {
      * @param {string} [language] - target language for the archive (should be 'ergo')
      * @param {Object} [options] - JSZip options
      * @param {Buffer} logo - Bytes data of the PNG file
-     * @param {string} [keyStorePath] - path of the pkcs keystore
-     * @param {string} [keyStorePassword] - password of the pkcs keystore
      * @return {Promise<Buffer>} the zlib buffer
      */
-    async toArchive(language, options, keyStorePath, keyStorePassword) {
+     async toArchive(language, options, keyStorePath, keyStorePassword) {
         const signatureObject = this.signTemplate(keyStorePath, keyStorePassword);
         return TemplateSaver.toArchive(this, language, options, signatureObject);
     }
@@ -277,7 +275,7 @@ class Template {
      * @param {Object} [options] - an optional set of options to configure the instance.
      * @return {Promise<Template>} a Promise to the instantiated template
      */
-    static async fromDirectory(path, options = null) {
+    static async fromDirectory(path, options=null) {
         return TemplateLoader.fromDirectory(Template, path, options);
     }
 
@@ -287,7 +285,7 @@ class Template {
      * @param {Object} [options] - an optional set of options to configure the instance.
      * @return {Promise<Template>} a Promise to the template
      */
-    static async fromArchive(buffer, options = null) {
+    static async fromArchive(buffer, options=null) {
         return TemplateLoader.fromArchive(Template, buffer, options);
     }
 
@@ -297,7 +295,7 @@ class Template {
      * @param {Object} [options] - an optional set of options to configure the instance.
      * @return {Promise} a Promise to the template
      */
-    static async fromUrl(url, options = null) {
+    static async fromUrl(url, options=null) {
         return TemplateLoader.fromUrl(Template, url, options);
     }
 
@@ -347,7 +345,7 @@ class Template {
      * @return {Factory} the Factory for this template
      */
     getFactory() {
-        return this.logicManager.getFactory();
+        return this.getModelManager().getFactory();
     }
 
     /**
@@ -356,7 +354,7 @@ class Template {
      * @return {Serializer} the Serializer for this template
      */
     getSerializer() {
-        return this.logicManager.getSerializer();
+        return this.getModelManager().getSerializer();
     }
 
     /**

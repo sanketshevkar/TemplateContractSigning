@@ -34,7 +34,7 @@ class TemplateSaver {
      * @param {Object} [signatureObject] - object containing signatures and metadata
      * @return {Promise<Buffer>} the zlib buffer
      */
-    static async toArchive(template, language, options, signatureObject) {
+     static async toArchive(template, language, options, signatureObject) {
 
         
         if(!language || typeof(language) !== 'string') {
